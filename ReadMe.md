@@ -17,15 +17,6 @@ Tavares (2020) Modified clustering algorithm for molecular simulation, Molecular
 
 ---
 
-## 🧱 Project Structure
-
-.
-├── CMakeLists.txt         # Build configuration
-├── main.c                 # Entry point: parses input and runs clustering
-├── parser.c / parser.h    # XML parser for HOOMD files
-├── clustering.c / clustering.h  # Clustering logic
-├── README.md              # This file
-
 ## ⚙️ Build Instructions
 
 ### Requirements
@@ -46,7 +37,7 @@ make
 ### Run
 
 ```bash
-./hoomd_cluster <path/to/hoomd_xml> --cut <float> --types <str> ... <str>
+hoomd_cluster <path/to/hoomd_xml> --cut <float> --types <str> ... <str>
 ```
 
 Results will be saved in `clustering.out`.
