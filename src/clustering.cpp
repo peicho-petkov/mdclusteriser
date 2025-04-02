@@ -135,6 +135,12 @@ void clustering(int **node_next, int *n_contacts_per_molecule,
     }
 
     FILE *f = fopen(out_name, "w");
+
+    if (!f) {
+        printf("ERROR: enable to create file %s\n",out_name);
+        exit(2);
+    }
+  
     fprintf(f, "Numbers of Links %d\n", n_links);
     fprintf(f, "Number of clusters %d\n", n_clusters);
     fprintf(f, "Number of iterations for convergence %d\n\n", N);
