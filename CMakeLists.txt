@@ -9,12 +9,12 @@ pkg_check_modules(LIBXML2 REQUIRED libxml-2.0)
 include_directories(${LIBXML2_INCLUDE_DIRS})
 include_directories(include)
 
-add_executable(hoomd_cluster
+add_executable(hoomd_cluster2
     src/main.cpp
     src/parser.cpp
     src/clustering.cpp
 )
 
-target_link_libraries(hoomd_cluster ${LIBXML2_LIBRARIES} m)
+target_link_libraries(hoomd_cluster2 ${LIBXML2_LIBRARIES} m)
 
-install(TARGETS hoomd_cluster DESTINATION bin)
+install(TARGETS hoomd_cluster2 DESTINATION bin)
