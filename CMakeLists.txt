@@ -23,3 +23,4 @@ add_executable(clout_ana2
 target_link_libraries(hoomd_cluster2 ${LIBXML2_LIBRARIES} m)
 
 install(TARGETS hoomd_cluster2 DESTINATION bin)
+install(TARGETS clout_ana2 DESTINATION bin)
