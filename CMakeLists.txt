@@ -15,6 +15,11 @@ add_executable(hoomd_cluster2
     src/clustering.cpp
 )
 
+add_executable(clout_ana2
+    tools/clout_ana.cpp
+    tools/analyse_clfiles.cpp
+)
+
 target_link_libraries(hoomd_cluster2 ${LIBXML2_LIBRARIES} m)
 
 install(TARGETS hoomd_cluster2 DESTINATION bin)
