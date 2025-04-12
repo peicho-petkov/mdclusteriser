@@ -226,7 +226,9 @@ void neighboring(float **rx, float **ry, float **rz,
 
 void neighboring_particles(float *rx, float *ry, float *rz,
                            float dist_cluster, int n_particles,
-                           int max_contacts, float Lx, float Ly, float Lz, int *aindex, const char *out_name)
+                           int max_contacts, float Lx, float Ly, float Lz, 
+                           int *aindex, const char *out_name,
+                           bool use_pbc)
 {
     int **node_next = (int **)malloc(n_particles * sizeof(int *));
     int *n_contacts_per_molecule = (int *)calloc(n_particles, sizeof(int));
@@ -235,6 +237,9 @@ void neighboring_particles(float *rx, float *ry, float *rz,
 
     int n_links = 0;
 
+    int pbc = 0;
+    if (use_pbc) pbc = 1;
+
 #pragma omp parallel for schedule(dynamic)
     for (int m = 0; m < n_particles; m++)
     {
@@ -242,11 +247,11 @@ void neighboring_particles(float *rx, float *ry, float *rz,
         {
             int found = 0;
             float dx = rx[m] - rx[n];
-            dx -= Lx * rint(dx / Lx);
+            dx -= pbc * Lx * rint(dx / Lx);
             float dy = ry[m] - ry[n];
-            dy -= Ly * rint(dy / Ly);
+            dy -= pbc * Ly * rint(dy / Ly);
             float dz = rz[m] - rz[n];
-            dz -= Lz * rint(dz / Lz);
+            dz -= pbc * Lz * rint(dz / Lz);
             float dist2 = dx * dx + dy * dy + dz * dz;
 
             if (dist2 < dist_cluster * dist_cluster)

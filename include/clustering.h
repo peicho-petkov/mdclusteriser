@@ -10,6 +10,9 @@ void neighboring(float **rx, float **ry, float **rz,
 // The same algorithm like neighboring() but for particles (instead of molecules)
 void neighboring_particles(float *rx, float *ry, float *rz,
                                 float dist_cluster, int n_particles,
-                                int max_contacts, float Lx, float Ly, float Lz, int *aindex, const char *out_name);
+                                int max_contacts, 
+                                float Lx, float Ly, float Lz, 
+                                int *aindex, const char *out_name,
+                                bool use_pbc);
 
 #endif // CLUSTERING_H

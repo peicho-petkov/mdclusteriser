@@ -13,7 +13,7 @@
 
 int main(int argc, char **argv) {
     if (argc < 6) {
-        printf("Usage: %s --xml system.xml --cut <float> --types <str> ... <str> --up_down_layers --up_layer --down_layer\n", argv[0]);
+        printf("Usage: %s --xml system.xml --cut <float> --types <str> ... <str> --up_down_layers --up_layer --down_layer --pbc --com\n", argv[0]);
         return 1;
     }
 
@@ -22,6 +22,8 @@ int main(int argc, char **argv) {
     bool up_layer = false;
     bool down_layer = false;
     bool all = true;
+    bool use_pbc = false;
+    bool calc_com = false;
     
     float cluster_cutoff = 1.0;
 
@@ -66,6 +68,18 @@ int main(int argc, char **argv) {
             }
             down_layer = true;
             all = false;
+            continue;
+        } else if (!strcmp(argv[i], "--pbc")) {
+            for (++i; i < argc && argv[i][0] != '-'; ++i) { // Skip non-option arguments
+                std::cout<<"xml argv[" << i <<"] "<<argv[i]<< std::endl;
+            }
+            use_pbc = true;
+            continue;
+        } else if (!strcmp(argv[i], "--com")) {
+            for (++i; i < argc && argv[i][0] != '-'; ++i) { // Skip non-option arguments
+                std::cout<<"xml argv[" << i <<"] "<<argv[i]<< std::endl;
+            }
+            calc_com = true;
             continue;
         } else {
             fprintf(stderr, "Invalid option: %s\n", argv[i]);
@@ -121,6 +135,25 @@ int main(int argc, char **argv) {
         std::map<std::string,std::vector<float>> x_map, y_map, z_map, x_up, y_up, z_up, x_down, y_down, z_down;
         std::map<std::string,std::vector<int>> andx_map, andx_up, andx_down;
 
+        if (calc_com) {
+            float x_com = 0, y_com = 0, z_com = 0;
+            for (int i = 0; i < n_particles; i++) {
+                x_com += x[i];
+                y_com += y[i];
+                z_com += z[i];
+            }
+
+            x_com /= n_particles;
+            y_com /= n_particles;
+            z_com /= n_particles;
+
+            for (int i = 0; i < n_particles; i++) {
+                x[i] -= x_com;
+                y[i] -= y_com;
+                z[i] -= z_com;
+            }
+        }
+        
         for (int i = 0; i < n_particles; i++) {
             std::string type = types[i];
             x_map[types[i]].push_back(x[i]);
@@ -177,19 +210,19 @@ int main(int argc, char **argv) {
             std::string filename;
             if (all) {
                 filename = path.filename().string() + "_type_" + ptype + "_neighboring.txt";
-                neighboring_particles(x_map[ptype].data(), y_map[ptype].data(), z_map[ptype].data(), cluster_cutoff, x_map[ptype].size(), 32, lx, ly, lz, andx_map[ptype].data(),filename.c_str());
+                neighboring_particles(x_map[ptype].data(), y_map[ptype].data(), z_map[ptype].data(), cluster_cutoff, x_map[ptype].size(), 32, lx, ly, lz, andx_map[ptype].data(),filename.c_str(), use_pbc);
                 all_files_output[ptype] << filename <<'\t'<<xmlfilename<<'\t'<<ptype<< "all" <<'\t'<<'\n';
             }
             
             if ( up_layer ) {
                 filename = path.filename().string() + "_up_type_" + ptype + "_neighboring.txt";
-                neighboring_particles(x_up[ptype].data(), y_up[ptype].data(), z_up[ptype].data(), cluster_cutoff, x_up[ptype].size(), 32, lx, ly, lz, andx_up[ptype].data(),filename.c_str());
+                neighboring_particles(x_up[ptype].data(), y_up[ptype].data(), z_up[ptype].data(), cluster_cutoff, x_up[ptype].size(), 32, lx, ly, lz, andx_up[ptype].data(),filename.c_str(),use_pbc);
                 up_files_output[ptype] << filename <<'\t'<<xmlfilename<<'\t'<<ptype<<'\t'<< "up" <<'\n';
             }
             
             if ( down_layer ) {
                 filename = path.filename().string() + "_down_type_" + ptype + "_neighboring.txt";
-                neighboring_particles(x_down[ptype].data(), y_down[ptype].data(), z_down[ptype].data(), cluster_cutoff, x_down[ptype].size(), 32, lx, ly, lz, andx_down[ptype].data(),filename.c_str());
+                neighboring_particles(x_down[ptype].data(), y_down[ptype].data(), z_down[ptype].data(), cluster_cutoff, x_down[ptype].size(), 32, lx, ly, lz, andx_down[ptype].data(),filename.c_str(),use_pbc);
                 down_files_output[ptype] << filename <<'\t'<<xmlfilename<<'\t'<<ptype<<'\t'<< "down" << '\n';
             }
         }

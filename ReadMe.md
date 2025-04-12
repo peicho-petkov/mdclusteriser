@@ -14,6 +14,7 @@ Tavares (2020) Modified clustering algorithm for molecular simulation, Molecular
 - Stores position and velocity components in separate arrays
 - Performs clustering based on inter-particle distances
 - Outputs cluster information and composition to a file (`clustering.out`)
+- Geometric center can be sutracted from the particles position (the term COM (center of mass) in the code)
 
 ---
 
