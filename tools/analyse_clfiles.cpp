@@ -45,7 +45,15 @@ void analyzeClusters(const std::string &inputFile,
                     // Ignore malformed lines
                     continue;
                 }
-
+                if (count < 2) {
+                    for (int i = 0; i < count; ++i) {
+                        if (!std::getline(infile, line)) {
+                            // If file ends unexpectedly, break out
+                            break;
+                        }
+                    }
+                    continue;
+                }
                 // Read 'count' lines for particle IDs
                 std::vector<int> particleIDs;
                 particleIDs.reserve(count);
